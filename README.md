@@ -1,2 +1,2 @@
 # RaspberryPi
-All about Raspberry Pi
+A Raspberry Pi archive.
