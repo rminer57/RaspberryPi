@@ -1,0 +1,339 @@
+
+===================================================
+Topic 1.101 Hardware and Architecture
+===================================================
+and Architecture
+Linux Disk Names
+The /dev/ filesystem is a pseudo filesystem (just like /proc/)
+Naming is done as the devices are found:
+. Controller 1 MasterHD /dev/hda
+. Controller 1 SlaveHD /dev/hdb
+. Controller 2 MasterHD /dev/hdc
+. Controller 2 SlaveHD /dev/hdd
+Logical partitions start from 5 (/dev/sda5)
+
+Reporting Your Hardware
+Before you tackle adding any new hardware devices to your system, it’s useful to
+obtain information about the hardware you have installed. Some useful tools to
+report this information include 
+modules:  lsmod
+hardware devices: lsdev
+pci bus: lspci
+
+
+Loadable Kernel Modules or just modules
+
+There are six main things LKMs are used for:
+
+    Device drivers. A device driver is designed for a specific piece of hardware. 
+    The kernel uses it to communicate with that piece of hardware without having to know any details of how the hardware works. 
+    For example, there is a device driver for ATA disk drives. There is one for NE2000 compatible Ethernet cards. 
+    To use any device, the kernel must contain a device driver for it.
+
+    Filesystem drivers. A filesystem driver interprets the contents of a filesystem (which is typically the contents of a disk drive) 
+    as files and directories and such. There are lots of different ways of storing files and directories and such on disk drives, 
+    on network servers, and in other ways. For each way, you need a filesystem driver. For example, there's a filesystem driver 
+    for the ext2 filesystem type used almost universally on Linux disk drives. There is one for the MS-DOS filesystem too, and one for NFS.
+
+    System calls. User space programs use system calls to get services from the kernel. For example, there are system calls to 
+    read a file, to create a new process, and to shut down the system. Most system calls are integral to the system and very 
+    standard, so are always built into the base kernel (no LKM option). But you can invent a system call of your own and install it as 
+    an LKM. Or you can decide you don't like the way Linux does something and override an existing system call with an LKM of your own.
+
+    Network drivers. A network driver interprets a network protocol. It feeds and consumes data streams at various layers of the 
+    kernel's networking function. For example, if you want an IPX link in your network, you would use the IPX driver.
+
+    TTY line disciplines. These are essentially augmentations of device drivers for terminal devices.
+
+    Executable interpreters. An executable interpreter loads and runs an executable. Linux is designed to be able to run 
+    executables in various formats, and each must have its own executable interpreter.
+    
+/etc/modules.conf
+command “lsusb t” shows how usb devices are physically attached
+
+cat /proc/interrupts shows interrupts
+cat /proc/dma
+cat /proc/ioports
+lsusb -t to see usb
+cat /proc/modules
+
+seeing installed hardware
+lsmod displays modules
+modinfo displays info about a module
+insmod  insert module
+modprobe  insert module
+rmmod remove module
+lsdev displays a device
+lspci display pci bus  
+
+=======================================================
+Topic 1.102 Linux  Installation and Package Management
+=======================================================
+
+===========================================================
+Topic 1.102 Objective 2 Install a Boot Manager  LILO GRUB
+===========================================================
+LILO is older, GRUB is newer and more versatile.
+Linux provides LILO and GRUB, which allow the booting of multiple operating systems
+They can both be installed into MBR, partition boot record or even removable devices
+They differ and many aspects, but the one with the most highlight is that LILO needs to be rerun
+whenever there's a kernel upgrade or certain changes to the system, while GRUB only needs a configuration file to be changed
+
+system’s kernel parameters are set in your boot loader’s configuration
+file (/etc/lilo.conf or /boot/grub/menu.lst, and boot/grub/grub.conf
+default, /dev/hda1
+Using LILO, you could interrupt the default boot and enter LILO: linux root=/dev/hda9
+
+===============================================================
+Topic 1.102 Objective 3: Make and Install Programs from Source
+===============================================================
+Opening a tarball
+Involves two processes, uncompress it with gunzip and then extract it with tar
+There different ways of doing it:
+#1
+$ gzip -d tarball.tar.gz
+$ tar xvf tarball.tar
+#2
+$ gunzip tarball.tar.gz
+$ tar xvf tarball.tar
+#3 - Does not decompress file (only stdout)
+gzip -dc tarball.tar.gz | tar xv
+#4 - Does not decompress file (only stdout)
+tar zxvf tarball.tar.gz
+#5 - Does not decompress file (only stdout)
+bzip2 -dc tarball.tar.bz2 | tar xv
+#6
+tar jxvf tarball.tar.bz2
+
+To build program, first run Configure from the unzipped directory.  It examines your
+system and creates makefiles for your system.
+Next run make... eg  make install  or make -f makefile install.
+
+
+===================================================
+Topic 1.102 Objective 4: Manage Shared Libraries
+===================================================
+[root@centos ~]# ll /bin/ln
+-rwxr-xr-x 1 root root 29872 May 24 2008 /bin/ln
+[root@centos ~]# ll /sbin/sln
+-rwxr-xr-x 1 root root 535118 May 23 2008 /sbin/sln
+
+ldd - print shared library dependencies
+$ ldd /bin/bash
+
+ld.so loads the shared libraries needed by a program, prepares the program to run,
+and then runs it.
+
+ld.so.conf
+$ cat /etc/ld.so.conf
+include /etc/ld.so.conf.d/*.conf
+
+===================================================
+Topic 1.102 Objective 5: Use Debian Package Management
+===================================================
+Debian package manager
+Install a package
+$ dpkg -i <folder/package name>
+Upgrade a package
+$ dpkg -G <folder/package name>
+Purge or remove a package
+$ dpkg -r <package name>
+$ dpkg --purge <package name>
+Find a package with specific files
+$ dpkg -S apt-get
+apt: /usr/bin/apt-get
+Get status information on a package
+$ dpkg -s apt
+Package: apt
+Status: install ok installed
+Priority: important
+Section: admin
+Installed-Size: 4444
+Maintainer: Ubuntu Core Developers <ubuntu-devel-discuss@lists.ubuntu.com>
+Architecture: i386
+Version: 0.7.6ubuntu14
+List files in a package
+$ dpkg -L apt | grep '^/usr/bin'
+/usr/bin
+/usr/bin/apt-cache
+/usr/bin/apt-cdrom
+/usr/bin/apt-config
+/usr/bin/apt-get
+/usr/bin/apt-key
+/usr/bin/apt-mark
+
+===================================================
+Topic 1.102 Objective 6: Use Red Hat Package Manager (RPM)
+===================================================
+$ rpm -i [install or mode options] PACKAGE_FILE...
+
+===================================================
+Topic 1.103 GNU and UNIX Commands
+===================================================
+
+
+===================================================
+Objective 1: Work on the Command Line
+===================================================
+ls -1; pwd
+
+
+
+
+===================================================
+Objective 2 Process Text Streams Using Filters
+===================================================
+lss /dev/sda*
+ll lpi/
+
+
+===================================================
+Objective 3 Perform Basic File Management
+===================================================
+ls -li
+cp /etc/apt/sources.list .
+mkdir
+mv
+rm
+rmdir
+touch
+
+
+===================================================
+Objective 4 Use Unix Streams, Pipes and Redirects
+===================================================
+ps x | grep nm-applet
+cat <<EOF > file1
+
+cmd1 | tee file2 | cmd2 | cm3 > file1
+
+===================================================
+Objective 5 Create, Monitor and Kill Processes
+===================================================
+ps -A
+ps -j --forest
+pstree
+top
+kill
+kill 1000 1001
+bg
+fg
+jobs
+nohup
+
+===================================================
+Objective 6 Modify Process Execution Priority
+===================================================
+nice
+renice
+
+
+=======================================================
+Objective 7 Search Text Files Using Regular Expressions
+=======================================================
+grep
+sed
+
+
+==========================================================
+Objective 8 Perform Basic File Editing Operations Using vi
+==========================================================
+
+
+cat cut with streams
+
+process commands  eg kill
+
+process execution priority nice command
+
+regular expression syntax
+
+grep (global regular expression print)
+sed stran edutir
+
+
+===================================================================
+Topic 1.104 Devices,Linux Filesystems, and the Filesystem Hierarchy
+===================================================================
+
+===================================================
+Objective 1 Create Partitions and Filesystems
+===================================================
+Hard disk devices
+IDE
+. Primary master /
+dev/hda
+. Primary slave /
+dev/hdb
+. Secondary master /
+dev/hdc
+. Secondary slave /
+dev/hdd
+SCSI
+. First drive /
+dev/sda
+. Second drive /
+dev/sdb
+. Third drive /
+dev/hdc
+
+The root filesystem and mount points
+Not
+all directories need to be on the same partition as /. As a matter of fact, mounting the different directories from different
+partitions into / helps avoid a problem in the system due to space
+Guideline
+to mounting partitions:
+. / First
+directory mounted. The following directories are required for the boot process, thus must be on the same partition
+/bin and /sbin System
+binary programs
+/dev Device
+files
+/etc Configuration
+files (some are required on boot)
+66
+/lib Shared
+libraries
+. Following directories are part of the single / partition and are better placed on a different partition than /
+/boot Contains
+static files used by the boot loader, including the kernel image. On systems used for kernel development
+this folder can fill up influencing the / directory if on the same partition
+/home User
+files and the bigger partition in the system
+/tmp Usually
+a separate partition to prevent temporary files from filling /
+/var Log
+files
+/usr Extra
+utilities that don't fit under /bin (games, printers, softwares, libraries, shared files, etc...) . Package manager
+installs software here.
+
+FDISK
+
+===================================================
+Objective 2 Maintain the Integrity of Filesystems
+===================================================
+
+=======================================================
+Objective 3 Control Filesystem Mounting and Unmounting
+=======================================================
+
+===================================================
+Objective 4 Managing Disk Quotas
+===================================================
+
+===========================================================
+Objective 5 Use File Permissions to Control Access to Files
+===========================================================
+
+===================================================
+Objective 6 Manage File Ownership
+===================================================
+
+=====================================================
+Objective 7 Create and Change Hard and Symbolic Links
+=====================================================
+
+=====================================================================
+Objective 8 Find System Files and Place Files in the Correct Location
+=====================================================================
