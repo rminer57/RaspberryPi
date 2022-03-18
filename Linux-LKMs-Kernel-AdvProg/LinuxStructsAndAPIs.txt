@@ -1,0 +1,14 @@
+
+
+Linux Data Structures
+http://www.tldp.org/LDP/tlk/ds/ds.html
+
+
+Device Drivers
+http://www.tldp.org/LDP/tlk/dd/drivers.html
+
+Linux Kernel
+http://www.tldp.org/LDP/tlk/tlk-toc.html
+
+The Linux Kernel API
+https://www.kernel.org/doc/htmldocs/kernel-api/

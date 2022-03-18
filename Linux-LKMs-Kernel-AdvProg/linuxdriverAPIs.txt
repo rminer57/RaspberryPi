@@ -1,0 +1,36 @@
+# build module
+# uname - print system information -r print the kernel release
+# 
+#
+# modprobe -l    display all available modules as shown below.
+# lsmod | less   display currently loaded modules
+# sudo modprobe mymodbuiltname.ko -o mymodulealiasname.ko   load module with a new name if a conflict occurs
+# sudo insmod randyminer.ko  load a module ... ie. run it
+# sudo rmmod randyminer.ko   unload a module....ie. stop it
+# modinfo     display information about a module
+# kernel makefile absolute path is /usr/src/linux-headers-3.11.0-18-generic
+
+APIs for Linux Loadable Kernel Modules
+root path to headers (eg. #include <linux/module.h>
+\lib\modules\3.11.0-18-generic\build\include
+
+// Defining __KERNEL__ and MODULE allows us to access kernel-level code not usually available to userspace programs.
+#undef __KERNEL__
+#define __KERNEL__
+#undef MODULE
+#define MODULE
+
+
+module_init(hello_init);
+module_exit(hello_cleanup);
+
+#define DRIVER_AUTHOR "Randall Miner <minerran@bellsouth.net>"
+#define DRIVER_DESC   "A sample KLM, tested on Ubuntu 13.10 saucy"
+
+MODULE_LICENSE("GPL");
+MODULE_AUTHOR(DRIVER_AUTHOR);	/* Who wrote this module? */
+MODULE_DESCRIPTION(DRIVER_DESC);	/* What does this module do */
+MODULE_SUPPORTED_DEVICE("testdevice");
+
+printk
+
